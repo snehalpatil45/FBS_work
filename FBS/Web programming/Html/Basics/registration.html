@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>Student Registration Form</h3>
+
+<form action="dummy" method="get">
+<table border="1" cellpadding="3">
+
+<tr>
+    <td><label for = "username">Username</label></td>
+    <td><input type="text" name="username"id = "username"></td>
+</tr>
+
+<tr>
+    <td>Email</td>
+    <td><input type="email" name="email"></td>
+</tr>
+
+<tr>
+    <td>Mobile No</td>
+    <td><input type="number" name="mob_no"></td>
+</tr>
+
+<tr>
+    <td>Password</td>
+    <td><input type="password" name="password"></td>
+</tr>
+
+<tr>
+    <td>Gender</td>
+    <td>
+        <input type="radio" name="gender" value="m"> Male
+        <input type="radio" name="gender" value="f"> Female
+        <input type="radio" name="gender" value="o"> Others
+    </td>
+</tr>
+
+<tr>
+    <td>Subjects</td>
+    <td>
+        <input type="checkbox" name="py"> Python
+        <input type="checkbox" name="java"> Java
+        <input type="checkbox" name="st"> Software Testing
+        <input type="checkbox" name="mern"> MERN
+    </td>
+</tr>
+<tr>
+    <td>state</td>
+    <td> <select name ="state">
+        <option value = "mh">Maharastra</option>
+        <option value = "mh">Bihar</option>
+        <option value = "mh">Madhya pradesh</option>
+        <option value = "mh">uttar padesh</option>
+        <option value = "mh">kerla</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>
+        <input type = "text" list = "statelist">
+        <datalist id ="statelist">
+        <option value = "mh">Maharastra</option>
+        <option value = "bih">Bihar</option>
+        <option value = "mp">Madhya pradesh</option>
+        <option value = "up">uttar padesh</option>
+        <option value = "k">kerla</option>
+        </datalist>
+    </td>
+</tr>
+<tr>
+    <td colspan="2" align="center">
+        <input type="submit" value="Register">
+    </td>
+</tr>
+<tr>
+    <td>Age</td><td><input type ="range" name ="age"></td>
+</tr>
+<tr>
+    <td>color</td><td><input type = "color"name ="clr"></td>
+</tr>
+</table>
+</form>
+</body>
+</html>
