@@ -1,0 +1,1 @@
+print(paste("a=", a, "b=", b))

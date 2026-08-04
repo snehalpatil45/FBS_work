@@ -1,0 +1,19 @@
+# Default constructor:
+
+class Mobile:
+    def __init__(self,brand ='',processor ='',storage=0,price = 0):
+        self.brand = brand
+        self.pro = processor
+        self.sto = storage
+        self.price = price
+        #pass
+
+    def getData(self):
+        print('Brand:',self.brand)
+        print('Procesor:',self.pro)
+        print('Storage:',self.sto)
+        print('Price:',self.price)
+
+m1 = Mobile()
+#m1 = Mobile('Samsung','Snapdragon 8-Gen','1 TB',170000)
+m1.getData()

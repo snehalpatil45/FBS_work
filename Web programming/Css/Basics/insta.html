@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Instagram Clone</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white: #ffffff;
+    --bg: #fafafa;
+    --border: #dbdbdb;
+    --text: #262626;
+    --muted: #8e8e8e;
+    --blue: #0095f6;
+    --blue-light: #b2dffc;
+    --red: #ed4956;
+    --surface: #efefef;
+    --story-grad: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: 975px;
+    margin: 0 auto;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    gap: 16px;
+  }
+  .logo {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 268px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px 7px 36px;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input::placeholder { color: var(--muted); }
+  .search-input:focus { border-color: #aaa; background: #fff; }
+
+  .nav-icons { display: flex; align-items: center; gap: 22px; flex-shrink: 0; }
+  .nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: opacity 0.15s;
+  }
+  .nav-btn:hover { opacity: 0.6; }
+  .notif-dot {
+    position: absolute;
+    top: 2px; right: 2px;
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    border: 2px solid var(--white);
+  }
+  .profile-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+  }
+
+  /* ─── LAYOUT ─── */
+  .page {
+    max-width: 975px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+  }
+  .feed { flex: 1; max-width: 614px; min-width: 0; }
+
+  /* ─── STORIES ─── */
+  .stories-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 0;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .stories-card::-webkit-scrollbar { display: none; }
+  .stories-list {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+    width: max-content;
+  }
+  .story {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    min-width: 66px;
+  }
+  .story-ring {
+    width: 62px; height: 62px;
+    border-radius: 50%;
+    padding: 2.5px;
+    background: var(--story-grad);
+  }
+  .story-ring.yours { background: var(--border); }
+  .story-inner {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: var(--white);
+    padding: 2px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .story-emoji {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .story-name {
+    font-size: 11px;
+    color: var(--text);
+    text-align: center;
+    max-width: 66px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ─── POST CARD ─── */
+  .post {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.3s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .post:nth-child(1) { animation-delay: 0s; }
+  .post:nth-child(2) { animation-delay: 0.08s; }
+  .post:nth-child(3) { animation-delay: 0.16s; }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+  }
+  .post-user { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .avatar.ring {
+    padding: 2px;
+    background: var(--story-grad);
+  }
+  .avatar.ring .avatar-inner {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: var(--white);
+    padding: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .post-meta { display: flex; flex-direction: column; }
+  .post-username { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .post-location { font-size: 12px; color: var(--muted); }
+  .more-btn {
+    background: none; border: none;
+    cursor: pointer; color: var(--text);
+    font-size: 20px; padding: 4px; line-height: 1;
+    letter-spacing: 1px;
+  }
+  .more-btn:hover { opacity: 0.5; }
+
+  .post-image {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 100px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+  }
+  .post-image .dbl-like {
+    position: absolute;
+    font-size: 80px;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.5);
+    transition: none;
+    filter: drop-shadow(0 2px 12px rgba(0,0,0,0.3));
+  }
+  .post-image .dbl-like.pop {
+    animation: heartPop 0.7s ease forwards;
+  }
+  @keyframes heartPop {
+    0% { opacity: 1; transform: scale(0.5); }
+    30% { opacity: 1; transform: scale(1.3); }
+    70% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1); }
+  }
+
+  .post-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px 4px;
+  }
+  .actions-left { display: flex; gap: 4px; }
+  .act-btn {
+    background: none; border: none;
+    cursor: pointer; padding: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+    transition: transform 0.1s;
+    border-radius: 4px;
+  }
+  .act-btn:hover { background: var(--surface); }
+  .act-btn:active { transform: scale(0.85); }
+  .act-btn.liked svg { fill: var(--red); stroke: var(--red); }
+  .act-btn.saved svg { fill: var(--text); }
+
+  .post-likes {
+    padding: 0 16px 6px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .post-caption {
+    padding: 0 16px 8px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .post-caption .uname { font-weight: 600; }
+  .post-caption .more-text { color: var(--muted); cursor: pointer; }
+  .view-comments {
+    padding: 0 16px 4px;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .view-comments:hover { color: #555; }
+  .post-time {
+    padding: 2px 16px 10px;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .comment-row {
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .emoji-picker { font-size: 20px; cursor: pointer; line-height: 1; }
+  .comment-input {
+    flex: 1;
+    border: none; outline: none;
+    font-size: 14px;
+    color: var(--text);
+    background: transparent;
+    font-family: inherit;
+  }
+  .comment-input::placeholder { color: var(--muted); }
+  .post-btn {
+    background: none; border: none;
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .post-btn:disabled { color: var(--blue-light); cursor: default; }
+  .post-btn:not(:disabled):hover { color: #007acc; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 293px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 80px;
+    align-self: flex-start;
+  }
+  .sidebar-me {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .sidebar-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .sidebar-me-info { flex: 1; min-width: 0; }
+  .sidebar-username { font-size: 14px; font-weight: 600; }
+  .sidebar-fullname { font-size: 14px; color: var(--muted); }
+  .sidebar-switch {
+    background: none; border: none;
+    color: var(--blue); font-size: 12px; font-weight: 600;
+    cursor: pointer;
+  }
+
+  .suggest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .suggest-label { font-size: 14px; font-weight: 600; color: var(--muted); }
+  .see-all-btn {
+    background: none; border: none;
+    font-size: 12px; font-weight: 600;
+    color: var(--text); cursor: pointer;
+  }
+
+  .suggest-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .suggest-av {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .suggest-info { flex: 1; min-width: 0; }
+  .suggest-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .suggest-sub { font-size: 12px; color: var(--muted); }
+  .follow-btn {
+    background: none; border: none;
+    color: var(--blue); font-size: 12px; font-weight: 600;
+    cursor: pointer; flex-shrink: 0;
+    transition: opacity 0.15s;
+  }
+  .follow-btn.following { color: var(--muted); }
+  .follow-btn:hover:not(.following) { color: #007acc; }
+
+  .sidebar-footer {
+    margin-top: 28px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 2;
+  }
+  .sidebar-footer a { color: var(--muted); text-decoration: none; }
+  .sidebar-footer a:hover { text-decoration: underline; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .page { padding: 0; }
+    .feed { max-width: 100%; }
+    .post { border-left: none; border-right: none; border-radius: 0; }
+    .stories-card { border-left: none; border-right: none; border-radius: 0; }
+  }
+  @media (max-width: 480px) {
+    .logo { font-size: 18px; }
+    .search-wrap { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="header-inner">
+    <span class="logo">Instagram</span>
+
+    <div class="search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" type="text" placeholder="Search" />
+    </div>
+
+    <div class="nav-icons">
+      <button class="nav-btn" title="Home">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
+      <button class="nav-btn" title="Messages">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <button class="nav-btn" title="Create">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      </button>
+      <button class="nav-btn" title="Explore">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="nav-btn" title="Notifications">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+      <div class="profile-avatar">🧑</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ MAIN PAGE ═══ -->
+<div class="page">
+
+  <!-- ── FEED ── -->
+  <div class="feed">
+
+    <!-- Stories -->
+    <div class="stories-card">
+      <div class="stories-list" id="stories-list"></div>
+    </div>
+
+    <!-- Posts -->
+    <div id="posts-container"></div>
+
+  </div>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-me">
+      <div class="sidebar-avatar">🧑</div>
+      <div class="sidebar-me-info">
+        <div class="sidebar-username">you</div>
+        <div class="sidebar-fullname">Your Name</div>
+      </div>
+      <button class="sidebar-switch">Switch</button>
+    </div>
+
+    <div class="suggest-header">
+      <span class="suggest-label">Suggested for you</span>
+      <button class="see-all-btn">See All</button>
+    </div>
+
+    <div id="suggestions"></div>
+
+    <div class="sidebar-footer">
+      <a href="#">About</a> · <a href="#">Help</a> · <a href="#">Press</a> · <a href="#">API</a> · <a href="#">Jobs</a> ·
+      <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Locations</a><br>
+      © 2025 INSTAGRAM CLONE FROM META
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────
+const stories = [
+  { name: 'Your Story', emoji: '➕', yours: true },
+  { name: 'luna_art',   emoji: '🎨' },
+  { name: 'traveljoe',  emoji: '✈️' },
+  { name: 'foodiemx',   emoji: '🍜' },
+  { name: 'peterpan',   emoji: '🏄' },
+  { name: 'nycvibes',   emoji: '🗽' },
+  { name: 'mtnhiker',   emoji: '🏔️' },
+  { name: 'dj_beats',   emoji: '🎧' },
+  { name: 'plantmom',   emoji: '🌿' },
+];
+
+const posts = [
+  {
+    username: 'luna_art', location: 'Barcelona, Spain', emoji: '🎨',
+    bg: '#f0e6ff', imgEmoji: '🖼️',
+    likes: 1284, caption: 'Finished this piece after 3 weeks of work. Sometimes art just flows 🌊',
+    time: '2 HOURS AGO', comments: 47, liked: false, saved: false,
+  },
+  {
+    username: 'traveljoe', location: 'Santorini, Greece', emoji: '✈️',
+    bg: '#e6f4ff', imgEmoji: '🏛️',
+    likes: 3891, caption: 'The light at 6pm here is absolutely unreal. No filter needed.',
+    time: '5 HOURS AGO', comments: 112, liked: false, saved: false,
+  },
+  {
+    username: 'foodiemx', location: 'Mexico City, Mexico', emoji: '🍜',
+    bg: '#fff3e6', imgEmoji: '🌮',
+    likes: 762, caption: 'Found the most incredible taqueria down a random alley. Worth every second of being lost.',
+    time: '8 HOURS AGO', comments: 33, liked: true, saved: false,
+  },
+  {
+    username: 'mtnhiker', location: 'Yosemite, California', emoji: '🏔️',
+    bg: '#e8f5e9', imgEmoji: '⛺',
+    likes: 5203, caption: 'Nothing clears your head like 4 days off-grid in the wilderness.',
+    time: '1 DAY AGO', comments: 289, liked: false, saved: true,
+  },
+];
+
+const suggestions = [
+  { name: 'nycvibes',  sub: 'Followed by luna_art',   emoji: '🗽' },
+  { name: 'mtnhiker',  sub: 'Suggested for you',       emoji: '🏔️' },
+  { name: 'chefkaren', sub: 'Suggested for you',       emoji: '👩‍🍳' },
+  { name: 'designlab', sub: 'Followed by traveljoe',   emoji: '✏️' },
+  { name: 'catsofig',  sub: 'Suggested for you',       emoji: '🐱' },
+];
+
+// ─── ICONS ──────────────────────────────────────────
+const heartIcon = (f) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="${f?'#ed4956':'none'}" stroke="${f?'#ed4956':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+const commentIcon = () => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+const shareIcon = () => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
+const saveIcon = (f) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="${f?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`;
+
+// ─── RENDER STORIES ──────────────────────────────────
+const storiesEl = document.getElementById('stories-list');
+stories.forEach(s => {
+  const div = document.createElement('div');
+  div.className = 'story';
+  div.innerHTML = `
+    <div class="story-ring${s.yours ? ' yours' : ''}">
+      <div class="story-inner">
+        <div class="story-emoji">${s.emoji}</div>
+      </div>
+    </div>
+    <span class="story-name">${s.name}</span>
+  `;
+  storiesEl.appendChild(div);
+});
+
+// ─── RENDER POSTS ────────────────────────────────────
+const postsEl = document.getElementById('posts-container');
+
+posts.forEach((p, i) => {
+  const div = document.createElement('div');
+  div.className = 'post';
+
+  div.innerHTML = `
+    <div class="post-header">
+      <div class="post-user">
+        <div class="avatar ring">
+          <div class="avatar-inner">${p.emoji}</div>
+        </div>
+        <div class="post-meta">
+          <span class="post-username">${p.username}</span>
+          <span class="post-location">${p.location}</span>
+        </div>
+      </div>
+      <button class="more-btn" aria-label="More options">···</button>
+    </div>
+
+    <div class="post-image" style="background:${p.bg}" data-idx="${i}">
+      <span>${p.imgEmoji}</span>
+      <span class="dbl-like">❤️</span>
+    </div>
+
+    <div class="post-actions">
+      <div class="actions-left">
+        <button class="act-btn like-btn${p.liked ? ' liked' : ''}" data-idx="${i}" aria-label="Like">${heartIcon(p.liked)}</button>
+        <button class="act-btn" aria-label="Comment">${commentIcon()}</button>
+        <button class="act-btn" aria-label="Share">${shareIcon()}</button>
+      </div>
+      <button class="act-btn save-btn${p.saved ? ' saved' : ''}" data-idx="${i}" aria-label="Save">${saveIcon(p.saved)}</button>
+    </div>
+
+    <div class="post-likes" id="likes-${i}">${p.likes.toLocaleString()} likes</div>
+    <div class="post-caption"><span class="uname">${p.username}</span> ${p.caption} <span class="more-text">more</span></div>
+    <div class="view-comments">View all ${p.comments} comments</div>
+    <div class="post-time">${p.time}</div>
+
+    <div class="comment-row">
+      <span class="emoji-picker">😊</span>
+      <input class="comment-input" type="text" placeholder="Add a comment…" aria-label="Add a comment" />
+      <button class="post-btn" disabled>Post</button>
+    </div>
+  `;
+
+  postsEl.appendChild(div);
+});
+
+// ─── INTERACTIONS ────────────────────────────────────
+
+// Like button
+document.querySelectorAll('.like-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const i = +btn.dataset.idx;
+    posts[i].liked = !posts[i].liked;
+    if (posts[i].liked) posts[i].likes++; else posts[i].likes--;
+    btn.innerHTML = heartIcon(posts[i].liked);
+    btn.classList.toggle('liked', posts[i].liked);
+    document.getElementById('likes-' + i).textContent = posts[i].likes.toLocaleString() + ' likes';
+  });
+});
+
+// Double-tap to like
+document.querySelectorAll('.post-image').forEach(img => {
+  let lastTap = 0;
+  const handler = (e) => {
+    const now = Date.now();
+    if (now - lastTap < 350) {
+      const i = +img.dataset.idx;
+      if (!posts[i].liked) {
+        posts[i].liked = true;
+        posts[i].likes++;
+        const likeBtn = document.querySelector(`.like-btn[data-idx="${i}"]`);
+        likeBtn.innerHTML = heartIcon(true);
+        likeBtn.classList.add('liked');
+        document.getElementById('likes-' + i).textContent = posts[i].likes.toLocaleString() + ' likes';
+      }
+      const dbl = img.querySelector('.dbl-like');
+      dbl.classList.remove('pop');
+      void dbl.offsetWidth;
+      dbl.classList.add('pop');
+    }
+    lastTap = now;
+  };
+  img.addEventListener('click', handler);
+  img.addEventListener('touchend', handler);
+});
+
+// Save button
+document.querySelectorAll('.save-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const i = +btn.dataset.idx;
+    posts[i].saved = !posts[i].saved;
+    btn.innerHTML = saveIcon(posts[i].saved);
+    btn.classList.toggle('saved', posts[i].saved);
+  });
+});
+
+// Comment input
+document.querySelectorAll('.comment-row').forEach(row => {
+  const input = row.querySelector('.comment-input');
+  const postBtn = row.querySelector('.post-btn');
+  input.addEventListener('input', () => {
+    postBtn.disabled = !input.value.trim();
+  });
+  postBtn.addEventListener('click', () => {
+    input.value = '';
+    postBtn.disabled = true;
+    input.focus();
+  });
+});
+
+// ─── RENDER SUGGESTIONS ──────────────────────────────
+const suggestEl = document.getElementById('suggestions');
+suggestions.forEach(s => {
+  const div = document.createElement('div');
+  div.className = 'suggest-item';
+  let following = false;
+  div.innerHTML = `
+    <div class="suggest-av">${s.emoji}</div>
+    <div class="suggest-info">
+      <div class="suggest-name">${s.name}</div>
+      <div class="suggest-sub">${s.sub}</div>
+    </div>
+    <button class="follow-btn">Follow</button>
+  `;
+  const btn = div.querySelector('.follow-btn');
+  btn.addEventListener('click', () => {
+    following = !following;
+    btn.textContent = following ? 'Following' : 'Follow';
+    btn.classList.toggle('following', following);
+  });
+  suggestEl.appendChild(div);
+});
+</script>
+</body>
+</html>

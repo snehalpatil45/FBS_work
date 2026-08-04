@@ -1,0 +1,109 @@
+# Assignment 5
+
+Q1.write an sql query to list all books written by author 'loni' with price less than 600.
+-> mysql> select * from book
+    -> where author_name = 'loni' and cost < 600;
+
+Q2.write an sql query to display issue details of books that are not returned yet.
+-> mysql> select * from issue_details
+    -> where return_date is null;
+
+Q3.write an sql query to update all blank return_date values to '2025-12-31' excluding issue ids 7005 and 7006.
+-> mysql> update issue_details
+    -> set return_date = '2025-12-31'
+    -> where return_date is null
+    -> and lib_issue_id not in (7005,7006);
+
+Q4.write an sql query to display issue details of books issued for more than 30 days.
+-> mysql> select * from issue_details
+    -> where datediff(curdate(),issue_date) > 30;
+
+Q5.write an sql query to list all books priced between 500 and 750 and belonging to category database.
+-> mysql> select * from book
+    -> where cost between 500 and 750
+    -> and category = 'database';
+
+Q6. write an sql query to list all books belonging to categories science,database,fiction or management.
+-> mysql> select * from book
+    -> where category in ( 'science','database','fiction','management');
+
+Q7. write an sql query to list all members in descending order of penalty amount.
+-> mysql> select * from member
+    -> order by penalty_amount desc;
+
+Q8. write an sql query to update book number 103 with cost = 300 and category = rdbms.
+-> mysql> update book
+    -> set cost = 300,category = 'rdbms'
+    -> where book_no = 103 ;
+
+Q9.write an sql query to list all books sorted by category (asending) and price (descending).
+-> mysql> select * from book
+    -> order by category asc,cost desc;
+
+Q10. write an sql query to list all books whose name contains the word 'sql'.
+-> mysql> select * from book
+    -> where book_name like '%sql%';
+
+Q11.write an sql query to display lib_issue_id,issue_date,return_date and number of days the book was issued.
+->  select lib_issue_id,issue_date,return_date,
+    -> datediff(ifnull(return_date,curdate()),issue_date)
+    -> as Days_issued
+    -> from issue_details;
+
+Q12.write an sql query to list member details ordered by their joining date.
+-> mysql> select * from member
+    -> order by acc_open_date;
+
+Q13.write an sql query to count total books issued to member id 1.
+-> mysql> select count(*) as Total_books_issued from issue_details
+    -> where member_id = 1;
+
+Q14.write an sql query to display total penalty due for all members.
+-> mysql> select sum(penalty_amount) as Total_penalty from member;
+
+Q15.write an sql query to display total number of members.
+-> mysql> select count(*) as Total_members from member;
+
+Q16.write an sql query to display total number of books issued.
+-> mysql> select count(*) as total_books_issued from issue_details;
+
+Q17.write an sql query to display average membership fees paid by all members.
+-> mysql> select avg(fees_paid) as Average_fees from member;
+
+Q18.write an sql query to display each category and number of books in that category.
+-> mysql> select category,count(*) as book_count from book
+    -> group by category;
+
+Q19.write an sql query to display book_no and number of times each book is issued ,sorted by count descending.
+-> mysql> select book_no,count(*) as Time_issued from issue_details
+    -> group by book_no
+    -> order by count(*) desc;
+
+Q20.write an sql query to display maximum , minimum ,total and average penalty amount from member table.
+-> mysql> select max(penalty_amount),min(penalty_amount),sum(penalty_amount),avg(penalty_amount) from member;
+
+Q21.write an sql query to display member id's who have issued more than 2 books
+-> mysql> select member_id from issue_details
+    -> group by member_id
+    -> having count(*) > 2;
+
+Q22.write an sql query to display member_id,book_no and number of times the same book was issued by that member.
+-> mysql> select member_id,book_no,count(*) from issue_details
+    -> group by member_id,book_no;
+
+Q23.write an sql query to display month wise count of books issued,sorted by count descending.
+-> mysql> select monthname(issue_date) as month,count(*) as Issue_count from issue_details
+    -> group by month
+    -> order by issue_count desc;
+
+Q24.write an sql query to list book numbers of books that have never been issued.
+-> mysql> select book_no from book
+    -> where book_no not in
+    -> (select distinct book_no from issue_details);
+
+Q25.write an sql query to list member id's who exist in member table and have issued at least one book.
+-> mysql> select distinct member_id from member
+    -> where member_id in
+    -> ( select member_id from issue_details);
+
+Q26.

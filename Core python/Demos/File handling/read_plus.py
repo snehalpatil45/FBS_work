@@ -1,0 +1,12 @@
+with open('C:/Users/ASUS/Desktop/FBS/Core python/Demos/File handling/demo.txt','r+') as fp:
+    # fp.write('ABC')
+    print('cursor position:',fp.tell())
+    fp.seek(0,0)
+    content = fp.read()
+    print(content)
+    print('cursor position:',fp.tell())
+    fp.write('ABC')
+    print('cursor position:',fp.tell())
+    fp.seek(0,0)
+    content = fp.read()
+    print(content)

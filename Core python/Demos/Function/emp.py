@@ -1,0 +1,10 @@
+def emp(id,name,sal=0,dept='',age=None,address='',email='',gender=''):
+    print('ID:',id)
+    print('Name:',name)
+    print('sal:',sal)
+    print('Dept:',dept)
+    print('Age:',age)
+    print('Address:',address)
+    print('Email:',email)
+    print('Gender:',gender)
+emp(101,'Abc',gender='male',dept='data analyst')

@@ -1,0 +1,17 @@
+'''Dr. Smith lives in the U.S. and works at New York University. 
+He specializes in A.I. and has published over 3.14 papers every year. 
+He often travels to Washington D.C. for conferences, workshops, etc. 
+Recently, he received an award from the A.I. Society.'''
+
+
+ "Hello! Are you coming?"
+
+
+ "My mailid is sonal@gmail.com"
+
+"eating", "eats", "ate", "adjustable", "rafting", "ability", "meeting","better","beutiful"
+
+"I am meeting him tomorrow at the meeting"
+
+"Tesla Inc has acquired Twitter Inc in India"
+"Mr. Smith is a wise person"
